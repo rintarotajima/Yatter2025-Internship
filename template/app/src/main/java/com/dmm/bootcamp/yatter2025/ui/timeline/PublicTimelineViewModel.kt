@@ -17,6 +17,7 @@ class PublicTimelineViewModel(
         MutableStateFlow(PublicTimelineUiState.empty())
     val uiState: StateFlow<PublicTimelineUiState> = _uiState.asStateFlow()
 
+    // YweetRepositoryからyweetListを取得して、_uiState(PublicTimelineUiState)を更新するメソッド
     private suspend fun fetchPublicTimeLine() {
         val yweetList = yweetRepository.findAllPublic()
         _uiState.update {
@@ -25,6 +26,9 @@ class PublicTimelineViewModel(
             )
         }
     }
+
+    // ViewModel外から呼び出されるメソッド
+    // ViewModelから公開するメソッド名は、処理の内容ではなくUI側のイベントに合わせた名前にする
 
     fun onResume() {
         viewModelScope.launch {
