@@ -2,7 +2,9 @@ package com.dmm.bootcamp.yatter2025.ui.timeline
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.dmm.bootcamp.yatter2025.common.navigation.Destination
 import com.dmm.bootcamp.yatter2025.domain.repository.YweetRepository
+import com.dmm.bootcamp.yatter2025.ui.post.PostDestination
 import com.dmm.bootcamp.yatter2025.ui.timeline.bindingmodel.converter.YweetConverter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +18,11 @@ class PublicTimelineViewModel(
     private val _uiState: MutableStateFlow<PublicTimelineUiState> =
         MutableStateFlow(PublicTimelineUiState.empty())
     val uiState: StateFlow<PublicTimelineUiState> = _uiState.asStateFlow()
+
+
+    // 遷移先の情報としてDestination?のStateFlowを定義
+    private val _destination = MutableStateFlow<Destination?>(null)
+    val destination: StateFlow<Destination?> = _destination.asStateFlow()
 
     // YweetRepositoryからyweetListを取得して、_uiState(PublicTimelineUiState)を更新するメソッド
     private suspend fun fetchPublicTimeLine() {
@@ -44,5 +51,15 @@ class PublicTimelineViewModel(
             fetchPublicTimeLine()
             _uiState.update { it.copy(isRefreshing = false) }
         }
+    }
+
+    // FABが押されたことを処理するメソッド
+    fun onClickPost() {
+        _destination.value  = PostDestination()
+    }
+
+    // 遷移が完了したあとに_destinationをクリアするメソッド
+    fun onCompleteNavigation() {
+        _destination.value = null
     }
 }
