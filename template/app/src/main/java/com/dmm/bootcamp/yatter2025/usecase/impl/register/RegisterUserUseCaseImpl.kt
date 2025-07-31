@@ -14,17 +14,17 @@ class RegisterUserUseCaseImpl(
   private val loginService: LoginService,
 ) : RegisterUserUseCase {
   override suspend fun execute(
-    username: String,
-    password: String,
+    username: Username,
+    password: Password,
   ): RegisterUserUseCaseResult {
-    if (username == "") {
+    if (username.value.isBlank()) {
       return RegisterUserUseCaseResult.Failure.EmptyUsername
     }
-    if (password == "") {
+    if (password.value.isBlank()) {
       return RegisterUserUseCaseResult.Failure.EmptyPassword
     }
-    val newUsername = Username(username)
-    val newPassword = Password(password)
+    val newUsername = Username(username.value)
+    val newPassword = Password(password.value)
     if (!newPassword.validate()) {
       return RegisterUserUseCaseResult.Failure.InvalidPassword
     }
